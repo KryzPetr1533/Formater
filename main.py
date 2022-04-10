@@ -1,8 +1,9 @@
 import requests
 import xlsxwriter
 
+name = 'file'
 # Create a workbook (exel file) and add a worksheet (table).
-workbook = xlsxwriter.Workbook('Test.xlsx')
+workbook = xlsxwriter.Workbook(name + '.xlsx')
 worksheet = workbook.add_worksheet()
 
 # Some data (this is test version) we want to write to the worksheet.
