@@ -35,3 +35,18 @@ for items in response['result']['results']:
 # worksheet.write(row, 1, '=SUM(B1:B4)')
 
 workbook.close()
+
+
+
+from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication
+import os
+
+Form, Window = uic.loadUiType("gui.ui")
+app = QApplication([])
+window = Window()
+form = Form()
+form.setupUi(window)
+window.show()
+
+app.exec_()
