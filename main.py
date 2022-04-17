@@ -50,4 +50,13 @@ form = Form()
 form.setupUi(window)
 window.show()
 
+def start_click():
+    print("click start with URL: " + form.lineEdit.text())
+form.startButton.clicked.connect(start_click)
+
+
+def continue_click():
+    print("click continue with format: " + form.comboBox.currentText())
+form.continueButton.clicked.connect(continue_click)
+
 app.exec_()
