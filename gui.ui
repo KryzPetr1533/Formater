@@ -42,6 +42,11 @@
         <string>MySQL</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>SQLite (.db)</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item row="5" column="1">
