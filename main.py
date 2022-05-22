@@ -1,12 +1,8 @@
 import requests
-import mysql.connector
-import sqlite3
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication
 import os
 import pandas as pd
-
-from mysql.connector import Error
 
 Form, Window = uic.loadUiType("gui.ui")
 app = QApplication([])
@@ -32,7 +28,7 @@ def continue_click():
         name_file = 'file' + form.comboBox.currentText()
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception
+            raise Exception("status_code not equal 200!")
         response = response.json()
         if form.comboBox.currentText() == '.xlsx':
             data_frame = pd.json_normalize(response['result'])
@@ -48,7 +44,7 @@ def continue_click():
             "Successful exported data from " +
             form.lineEdit.text() +
             " to CSV .csv file!")
-    except Error as err:
+    except Exception as err:
         print(err)
 
 form.continueButton.clicked.connect(continue_click)
