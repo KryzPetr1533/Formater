@@ -25,12 +25,19 @@ def start_click():
     # form.startButton.clicked.connect(start_click)
 
 
+def normilize_url(url_name):
+    url_name = url_name.split('/')[3]
+    
+    return 'https://catalog.data.gov/api/3/action/package_show?id=' + url_name
+
 def continue_click():
     global cursor
-        try:
-        url = form.lineEdit.text()
-        name_file = 'file' + form.comboBox.currentText()
+    try:
+        file_name = form.lineEdit_2.text()
+        url = normilize_url(form.lineEdit.text())
+        name_file = file_name + form.comboBox.currentText()
         response = requests.get(url)
+
         if response.status_code != 200:
             raise Exception("status_code not equal 200!")
         response = response.json()
