@@ -23,6 +23,7 @@ class Example(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
+        self.setWindowTitle("Formater")
 
         self.formats = "hfeiuaibufbuawfbwa"
 
@@ -148,6 +149,7 @@ class Example(QWidget):
                         connection.commit()
                 except Error as e:
                     print(e)
+                    self.show_popup_error(self)
                 finally:
                     if connection.is_connected():
                         cursor.close()
@@ -195,6 +197,7 @@ class Example(QWidget):
                         connection.commit()
                 except Error as e:
                     print(e)
+                    self.show_popup_error(self)
                 
                 finally:
                     if connection:
@@ -205,6 +208,10 @@ class Example(QWidget):
 
         except Exception as err:
             print(err)
+            self.show_popup_error()
+
+    def show_popup_error(self):
+        QMessageBox.about(self, "Error", "Something went wrong..")
 
 if __name__ == '__main__':
 
