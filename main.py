@@ -27,12 +27,12 @@ def start_click():
 
 def continue_click():
     global cursor
-    try:
+        try:
         url = form.lineEdit.text()
         name_file = 'file' + form.comboBox.currentText()
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception
+            raise Exception("status_code not equal 200!")
         response = response.json()
         if form.comboBox.currentText() == '.xlsx':
             data_frame = pd.json_normalize(response['result'])
@@ -48,7 +48,7 @@ def continue_click():
             "Successful exported data from " +
             form.lineEdit.text() +
             " to CSV .csv file!")
-    except Error as err:
+    except Exception as err:
         print(err)
 
 
