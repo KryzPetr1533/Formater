@@ -27,25 +27,29 @@ def start_click():
 
 def continue_click():
     global cursor
-    url = form.lineEdit.text()
-    name_file = 'file' + form.comboBox.currentText()
-    # Some data (this is test version) we want to write to save.
-    response = requests.get(url)
-    response = response.json()
-    if form.comboBox.currentText() == '.xlsx':
-        data_frame = pd.json_normalize(response['result'])
-        data_frame.to_excel(name_file)
-    print(
-        "Successful exported data from " +
-        form.lineEdit.text() +
-        " to Excel .xlsx file!")
-    if form.comboBox.currentText() == ".csv":
-        data_frame = pd.json_normalize(response['result'])
-        data_frame.to_csv(name_file)
-    print(
-        "Successful exported data from " +
-        form.lineEdit.text() +
-        " to CSV .csv file!")
+    try:
+        url = form.lineEdit.text()
+        name_file = 'file' + form.comboBox.currentText()
+        response = requests.get(url)
+        if response.status_code != 200:
+            raise Exception
+        response = response.json()
+        if form.comboBox.currentText() == '.xlsx':
+            data_frame = pd.json_normalize(response['result'])
+            data_frame.to_excel(name_file)
+        print(
+            "Successful exported data from " +
+            form.lineEdit.text() +
+            " to Excel .xlsx file!")
+        if form.comboBox.currentText() == ".csv":
+            data_frame = pd.json_normalize(response['result'])
+            data_frame.to_csv(name_file)
+        print(
+            "Successful exported data from " +
+            form.lineEdit.text() +
+            " to CSV .csv file!")
+    except Error as err:
+        print(err)
 
 
 if form.comboBox.currentText() == "MySQL":
