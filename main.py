@@ -9,15 +9,18 @@ import pandas as pd
 
 from mysql.connector import Error
 
+
 def start_click():
     print("click start")
 
     # form.startButton.clicked.connect(start_click)
 
+
 def normilize_url(url_name):
     url_name = url_name.split('/')[3]
-    
+
     return 'https://catalog.data.gov/api/3/action/package_show?id=' + url_name
+
 
 class Example(QWidget):
 
@@ -27,12 +30,12 @@ class Example(QWidget):
 
         self.formats = "hfeiuaibufbuawfbwa"
 
-        # url 
+        # url
         self.url_label = QLabel("URL", self)
         self.url_label.setAlignment(Qt.AlignCenter)
         self.url_text = QLineEdit(self)
         self.url_text.setAlignment(Qt.AlignCenter)
-        
+
         # file name
         self.file_label = QLabel("File name", self)
         self.file_label.setAlignment(Qt.AlignCenter)
@@ -102,7 +105,7 @@ class Example(QWidget):
                 mysql_password = "adminadmin"
                 mysql_table = "result"
                 connection = None
-                
+
                 try:
                     if self.combo_box.currentText() == "MySQL":
                         connection = mysql.connector.connect(
@@ -117,49 +120,39 @@ class Example(QWidget):
                         sql_delete = 'DROP TABLE IF EXISTS ' + mysql_table
                         cursor.execute(sql_delete)
 
-                        row = 0
-                        count_args = 0
                         sql_create = 'CREATE TABLE ' + mysql_table + ' ('
                         sql_list = []
-
-                        for items in response['result']['results']:
-                            sql_newline = 'INSERT ' + mysql_table + ' VALUES ('
-                            sql_value = []
-
-                            for name, data in items.items():
-                                if not isinstance(
-                                        data, list) and not isinstance(
-                                        data, dict) and data is not None:
-                                    if row == 0:
-                                        sql_create += name + ' TEXT,'
-                                        count_args += 1
-                                    else:
-                                        sql_newline += '%s,'
-                                        sql_value.append(data)
-
-                            sql_list.append([sql_newline[:-1] + ')', sql_value])
-                            row += 1
-
+                        data_frame = pd.json_normalize(response['result']);
+                        i = 0
+                        for string in data_frame.columns.values:
+                            sql_create += '`' + string + '`' + ' TEXT,'
+                            i += 1
                         cursor.execute(sql_create[:-1] + ')')
+                        sql_newline = 'INSERT INTO ' + mysql_table + ' VALUES ('
+                        sql_value = []
+                        t = 0
+                        while t < i:
+                            sql_newline += '%s,'
+                            sql_value.append(str(data_frame.iloc[0][t]))
+                            t += 1
 
+                        sql_list.append([sql_newline[:-1] + ')', sql_value])
                         for list1 in sql_list:
                             if len(list1[1]) > 0:
                                 cursor.execute(list1[0], list1[1])
-
-                        connection.commit()
+                        connection.commit();
                 except Error as e:
                     print(e)
                     self.show_popup_error(self)
                 finally:
                     if connection.is_connected():
-                        cursor.close()
                         connection.close()
                 print("Successful exported data from " + self.file_text.text() + " to MySQL DataBase!")
 
             if self.combo_box.currentText() == "SQLite (.db)":
                 connection = None
                 try:
-                    connection = sqlite3.connect("database.db")
+                    connection = sqlite3.connect(file_name + ".db")
                     sql_table = 'database'
 
                     if connection:
@@ -167,29 +160,24 @@ class Example(QWidget):
                         sql_delete = 'DROP TABLE IF EXISTS ' + sql_table
                         cursor.execute(sql_delete)
 
-                        row = 0
-                        count_args = 0
                         sql_create = 'CREATE TABLE ' + sql_table + ' ('
                         sql_list = []
-
-                        for items in response['result']['results']:
-                            sql_newline = 'INSERT INTO ' + sql_table + ' VALUES ('
-                            sql_value = []
-
-                            for name, data in items.items():
-                                if not isinstance(data, list) and not isinstance(data, dict) and data is not None:
-                                    if row == 0:
-                                        sql_create += name + ' TEXT,'
-                                        count_args += 1
-                                    else:
-                                        sql_newline += '?,'
-                                        sql_value.append(data)
-
-                            sql_list.append([sql_newline[:-1] + ')', sql_value])
-                            row += 1
-
+                        data_frame = pd.json_normalize(response['result']);
+                        i = 0
+                        for string in data_frame.columns.values:
+                            sql_create += '\'' + string + '\'' + ' TEXT,'
+                            i+=1
                         cursor.execute(sql_create[:-1] + ')')
 
+                        sql_newline = 'INSERT INTO ' + sql_table + ' VALUES ('
+                        sql_value = []
+                        t = 0
+                        while t < i:
+                            sql_newline += '?,'
+                            sql_value.append(str(data_frame.iloc[0][t]))
+                            t+=1
+
+                        sql_list.append([sql_newline[:-1] + ')', sql_value])
                         for list1 in sql_list:
                             if len(list1[1]) > 0:
                                 cursor.execute(list1[0], list1[1])
@@ -198,7 +186,7 @@ class Example(QWidget):
                 except Error as e:
                     print(e)
                     self.show_popup_error(self)
-                
+
                 finally:
                     if connection:
                         cursor.close()
@@ -213,8 +201,8 @@ class Example(QWidget):
     def show_popup_error(self):
         QMessageBox.about(self, "Error", "Something went wrong..")
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Example()
     sys.exit(app.exec_())
