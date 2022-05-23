@@ -126,7 +126,7 @@ class Example(QWidget):
         self.btn_submit.pressed.connect(self.continue_click)
 
     def continue_click(self):
-        global cursor
+        global cursor, connection
         try:
             file_name = self.file_text.text()
             url = normilize_url(self.url_text.text())
@@ -154,17 +154,17 @@ class Example(QWidget):
                     mysql_database = self.mysql_database_text.text()
                     mysql_port = int(self.mysql_port_text.text())
                     mysql_username = self.mysql_username_text.text()
-                    mysql_password = self.mysql_password.text()
-                    mysql_table = self.mysql_table.text()
+                    mysql_password = self.mysql_password_text.text()
+                    mysql_table = self.mysql_table_text.text()
                     connection = None
-                    
-                    if self.combo_box.currentText() == "MySQL":
-                        connection = mysql.connector.connect(
-                            host=mysql_host,
-                            port=mysql_port,
-                            database=mysql_database,
-                            user=mysql_username,
-                            password=mysql_password)
+
+
+                    connection = mysql.connector.connect(
+                        host=mysql_host,
+                        port=mysql_port,
+                        database=mysql_database,
+                        user=mysql_username,
+                        password=mysql_password)
 
                     if connection.is_connected():
                         cursor = connection.cursor()
@@ -191,7 +191,7 @@ class Example(QWidget):
                         for list1 in sql_list:
                             if len(list1[1]) > 0:
                                 cursor.execute(list1[0], list1[1])
-                        connection.commit();
+                        connection.commit()
                 except Error as e:
                     print(e)
                     self.show_popup_error(self)
@@ -217,7 +217,7 @@ class Example(QWidget):
                         i = 0
                         for string in data_frame.columns.values:
                             sql_create += '\'' + string + '\'' + ' TEXT,'
-                            i+=1
+                            i += 1
                         cursor.execute(sql_create[:-1] + ')')
 
                         sql_newline = 'INSERT INTO ' + sql_table + ' VALUES ('
@@ -226,7 +226,7 @@ class Example(QWidget):
                         while t < i:
                             sql_newline += '?,'
                             sql_value.append(str(data_frame.iloc[0][t]))
-                            t+=1
+                            t += 1
 
                         sql_list.append([sql_newline[:-1] + ')', sql_value])
                         for list1 in sql_list:
