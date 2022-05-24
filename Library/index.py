@@ -1,3 +1,4 @@
+from multiprocessing import connection
 import requests
 
 from Formater.Data.data import *
@@ -9,7 +10,7 @@ def normilize_url(url_name):
   return 'https://catalog.data.gov/api/3/action/package_show?id=' + url_name
 
 def click_func(self):
-  global cursor
+  global cursor, connection
   try:
     file_name = "../Output/" + self.file_text.text()
     url = normilize_url(self.url_text.text())

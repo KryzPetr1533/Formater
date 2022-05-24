@@ -9,18 +9,17 @@ def sql_parser(self, response):
     mysql_database = self.mysql_database_text.text()
     mysql_port = int(self.mysql_port_text.text())
     mysql_username = self.mysql_username_text.text()
-    mysql_password = self.mysql_password.text()
-    mysql_table = self.mysql_table.text()
+    mysql_password = self.mysql_password_text.text()
+    mysql_table = self.mysql_table_text.text()
     connection = None
-    
-    if (self.combo_box.currentText() == "MySQL"):
-      connection = mysql.connector.connect(
-        host=mysql_host,
-        port=mysql_port,
-        database=mysql_database,
-        user=mysql_username,
-        password=mysql_password
-      )
+
+    connection = mysql.connector.connect(
+      host = mysql_host,
+      port = mysql_port,
+      database = mysql_database,
+      user = mysql_username,
+      password = mysql_password
+    )
 
     if (connection.is_connected()):
       cursor = connection.cursor()
@@ -77,7 +76,7 @@ def db_parser(self, file_name, response):
 
       for string in data_frame.columns.values:
         sql_create += '\'' + string + '\'' + ' TEXT,'
-        i+=1
+        i += 1
       cursor.execute(sql_create[:-1] + ')')
 
       sql_newline = 'INSERT INTO ' + sql_table + ' VALUES ('
@@ -86,7 +85,7 @@ def db_parser(self, file_name, response):
       while t < i:
         sql_newline += '?,'
         sql_value.append(str(data_frame.iloc[0][t]))
-        t+=1
+        t += 1
 
       sql_list.append([sql_newline[:-1] + ')', sql_value])
       for list1 in sql_list:
