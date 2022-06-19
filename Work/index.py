@@ -1,11 +1,10 @@
 from pathlib import Path
 import sys
 
-path_root = Path(__file__).parents[2]
-print()
+path_root = Path(__file__).parents[1]
 sys.path.append(str(path_root))
 
-from Formater.Library.app import *
+from Library.app import *
 
 if (__name__ == '__main__'):
   app = QApplication(sys.argv)

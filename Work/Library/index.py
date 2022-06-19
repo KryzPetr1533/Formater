@@ -1,7 +1,7 @@
 from multiprocessing import connection
 import requests
 
-from Formater.Data.data import *
+from Data.data import *
 from .data_parser import *
 
 def normilize_url(url_name):
@@ -12,7 +12,7 @@ def normilize_url(url_name):
 def click_func(self):
   global cursor, connection
   try:
-    file_name = "../Output/" + self.file_text.text()
+    file_name = "./Output/" + self.file_text.text()
     url = normilize_url(self.url_text.text())
     name_file = file_name + self.combo_box.currentText()
     response = requests.get(url)
